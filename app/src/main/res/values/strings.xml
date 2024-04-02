@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Indica LMR</string>
+    <string name="saudacao_erro">Opa!</string>
+    <string name="saudacao_aguarde">Aguarde…</string>
+    <string name="mensagem_erro">Parece que você está sem conexão com a Internet. Ative o Wi-Fi ou redes móveis para acessar o aplicativo</string>
+    <string name="texto_botao_tentar">Tentar novamente</string>
+</resources>
