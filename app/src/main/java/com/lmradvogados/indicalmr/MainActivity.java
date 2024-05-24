@@ -2,14 +2,15 @@ package com.lmradvogados.indicalmr;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Rect;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -21,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -31,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView txtSaudacao, txtMensagem;
     private ImageView imgErro, imgCarregamento;
     private Button btTentar;
+    private View rootView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         imgErro = findViewById(R.id.imgErro);
         imgCarregamento = findViewById(R.id.imgCarregamento);
         btTentar = findViewById(R.id.btTentar);
+        rootView = findViewById(R.id.main);
 
         navigationManager = new NavigationManager(webview, getApplicationContext());
         WebSettings config = webview.getSettings();
@@ -77,8 +81,31 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
         webview.setWebChromeClient(new WebChromeClient());
-        navigationManager.carregarUrl("https://indicalmr.azurewebsites.net/");
+        navigationManager.carregarUrl("https://indica.lmradvogados.com.br/");
+
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Rect r = new Rect();
+                rootView.getWindowVisibleDisplayFrame(r);
+                int screenHeight = rootView.getRootView().getHeight();
+                int keypadHeight = screenHeight = r.bottom;
+
+                if(keypadHeight > screenHeight * 0.15){
+                    webview.setLayoutParams(new ConstraintLayout.LayoutParams(
+                            ConstraintLayout.LayoutParams.MATCH_PARENT,
+                            r.height()
+                    ));
+                }else{
+                    webview.setLayoutParams(new ConstraintLayout.LayoutParams(
+                            ConstraintLayout.LayoutParams.MATCH_PARENT,
+                            ConstraintLayout.LayoutParams.MATCH_PARENT
+                    ));
+                }
+            }
+        });
 
         btTentar.setOnClickListener(new View.OnClickListener() {
             @Override
